@@ -10,7 +10,7 @@ contract TestToken {
     //View is constant
     //Events can trigger external applications
     string public constant name = "TestToken";
-    string public constant symbol = "BSC";
+    string public constant symbol = "TTN";
     address public DeployerAddress;
     uint8 public constant decimals = 18;
 

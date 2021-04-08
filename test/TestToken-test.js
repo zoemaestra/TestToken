@@ -7,9 +7,9 @@ describe("TestToken", async function() {
     /*const accounts = await ethers.getSigners();
     owner = accounts[0];
     user = accounts[1];
-    user1 = accounts[2];
+    delegate = accounts[2];
     attacker = accounts[2];*/
-    [owner, user, user1, attacker] = await ethers.getSigners();
+    [owner, user, delegate, attacker] = await ethers.getSigners();
   })
 
   it("Deploy test", async function() {
@@ -28,7 +28,7 @@ describe("TestToken", async function() {
 
     await testToken.deployed();
 
-    await testToken.mint(1);
+    await testToken.mint("1");
 
     expect(await testToken.totalSupply()).to.equal("1001");
   });
@@ -40,9 +40,36 @@ describe("TestToken", async function() {
 
     await testToken.deployed();
 
-    await testToken.transfer(user1.address, 1);
+    await testToken.transfer(user.address, "1");
 
-    expect(await testToken.balanceOf(user1.address)).to.equal("1");
+    expect(await testToken.balanceOf(user.address)).to.equal("1");
     expect(await testToken.balanceOf(owner.address)).to.equal("999");
+  });
+
+  it("Delegation authorization test", async function() {
+    //Test transfering from one account to another using an authorized delegate
+    const TestToken = await ethers.getContractFactory("TestToken");
+    const testToken = await TestToken.deploy("1000");
+
+    await testToken.deployed();
+
+    await testToken.approve(delegate.address, "10");
+
+    expect(await testToken.allowance(owner.address,delegate.address)).to.equal("10");
+  });
+
+  it("Delegation transfer test", async function() {
+    //Test transfering from one account to another using an authorized delegate
+    const TestToken = await ethers.getContractFactory("TestToken");
+    const testToken = await TestToken.deploy("1000");
+
+    await testToken.deployed();
+
+    await testToken.approve(owner.address, "10");
+
+    await testToken.transferFrom(owner.address,user.address,10)
+
+    expect(await testToken.balanceOf(owner.address)).to.equal("990");
+    expect(await testToken.balanceOf(user.address)).to.equal("10");
   });
 });
