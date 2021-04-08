@@ -1,6 +1,7 @@
 const { expect } = require("chai");
 
 describe("TestToken", async function() {
+  //Tests for TestToken contract
   let owner, user, user1, attacker;
 
   before(async function() {
