@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\Zoe\\code\\ethereum\\TestToken\\contracts\\TestToken.sol": {
-      "lastModificationDate": 1617833747854,
-      "contentHash": "31c2d286e49e52eab91f6a384ed20573",
+      "lastModificationDate": 1617888869419,
+      "contentHash": "334a51ce1f857c49e82f57f8a68cefac",
       "sourceName": "contracts/TestToken.sol",
       "solcConfig": {
         "version": "0.7.3",
