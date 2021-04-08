@@ -1,5 +1,6 @@
 "use strict"
 const { expect } = require('chai');
+const { parseEther } = ethers.utils;
 
 describe('TestToken', async function () {
     //Tests for TestToken contract
@@ -16,19 +17,20 @@ describe('TestToken', async function () {
 
     beforeEach(async function () {
         const TestToken = await ethers.getContractFactory('TestToken');
-        contract = await TestToken.deploy('1000');
+        contract = await TestToken.deploy(parseEther('1000'));
         await contract.deployed();
+        console.log(contract.address);
     });
 
     it('Deploy test', async function () {
         //Test deploying token
-        expect(await contract.balanceOf(owner.address)).to.equal('1000');
+        expect(await contract.balanceOf(owner.address)).to.equal(parseEther('1000'));
     });
 
     it('Mint test', async function () {
         //Test mint function
-        await contract.mint('1');
-        expect(await contract.totalSupply()).to.equal('1001');
+        await contract.mint(parseEther('1'));
+        expect(await contract.totalSupply()).to.equal(parseEther('1001'));
     });
 
     it('Attacker should not be able to mint', async function () {
@@ -37,22 +39,21 @@ describe('TestToken', async function () {
 
     it('Transfer test', async function () {
         //Test transfering from one account to another
-        await contract.transfer(user.address, '1');
-        expect(await contract.balanceOf(user.address)).to.equal('1');
-        expect(await contract.balanceOf(owner.address)).to.equal('999');
+        await contract.transfer(user.address, parseEther('1'));
+        expect(await contract.balanceOf(user.address)).to.equal(parseEther('1'));
     });
 
     it('Delegation authorization test', async function () {
         //Test transfering from one account to another using an authorized delegate
-        await contract.approve(delegate.address, '10');
-        expect(await contract.allowance(owner.address, delegate.address)).to.equal('10');
+        await contract.approve(delegate.address, parseEther('20'));
+        expect(await contract.allowance(owner.address, delegate.address)).to.equal(parseEther('20'));
     });
 
     it('Delegation transfer test', async function () {
         //Test transfering from one account to another using an authorized delegate
-        await contract.approve(owner.address, '10');
-        await contract.transferFrom(owner.address, user.address, 10);
-        expect(await contract.balanceOf(owner.address)).to.equal('990');
-        expect(await contract.balanceOf(user.address)).to.equal('10');
+        await contract.approve(owner.address, parseEther('20'));
+        await contract.transferFrom(owner.address, user.address, parseEther('20'));
+        expect(await contract.balanceOf(owner.address)).to.equal(parseEther('980'));
+        expect(await contract.balanceOf(user.address)).to.equal(parseEther('20'));
     });
 });
