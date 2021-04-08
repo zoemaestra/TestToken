@@ -9,8 +9,8 @@ contract TestToken {
     //Public can be access from outside the contract
     //View is constant
     //Events can trigger external applications
-    string public constant name = "TestToken";
-    string public constant symbol = "TTN";
+    string public constant name = 'TestToken';
+    string public constant symbol = 'TTN';
     address public DeployerAddress;
     uint8 public constant decimals = 18;
 
@@ -47,8 +47,7 @@ contract TestToken {
         return balances[tokenOwner];
     }
 
-    function mint(uint256 numTokens) public returns (bool)
-    {
+    function mint(uint256 numTokens) public returns (bool) {
         require(msg.sender == DeployerAddress);
 
         //SafeMath uses .sub instead of subtraction operator because safer. Same for add.
@@ -62,8 +61,7 @@ contract TestToken {
         return true;
     }
 
-    function transfer(address receiver, uint256 numTokens) public returns (bool)
-    {
+    function transfer(address receiver, uint256 numTokens) public returns (bool) {
         //Acts as a break if wallet balance is less than numTokens - reverts previous logic if fails as well
         require(numTokens <= balances[msg.sender]);
 
@@ -77,8 +75,7 @@ contract TestToken {
         return true;
     }
 
-    function approve(address delegate, uint256 numTokens) public returns (bool)
-    {
+    function approve(address delegate, uint256 numTokens) public returns (bool) {
         //Delegate is a 3rd party allowed to spend tokens for a wallet
 
         //mapping(address => mapping(address => uint256))
@@ -90,14 +87,16 @@ contract TestToken {
         return true;
     }
 
-    function allowance(address owner, address delegate) public view returns (uint256)
-    {
+    function allowance(address owner, address delegate) public view returns (uint256) {
         //Returns value for how much a delegate can spend on behalf of an address
         return allowed[owner][delegate];
     }
 
-    function transferFrom(address owner, address buyer, uint256 numTokens) public returns (bool)
-    {
+    function transferFrom(
+        address owner,
+        address buyer,
+        uint256 numTokens
+    ) public returns (bool) {
         //Require token owner to have the amount of tokens needed
         //Require delegate for owner to be allowed to use the amount of tokens needed
         require(numTokens <= balances[owner]);
@@ -108,7 +107,7 @@ contract TestToken {
 
         //Remove set amount of allowed tokens from delegate
         allowed[owner][msg.sender] = allowed[owner][msg.sender].sub(numTokens);
-        
+
         //Gives buyer the set amount of tokens
         balances[buyer] = balances[buyer].add(numTokens);
 
@@ -120,14 +119,12 @@ contract TestToken {
 
 library SafeMath {
     //SafeMath library to prevent math fuckups
-    function sub(uint256 a, uint256 b) internal pure returns (uint256)
-    {
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
         assert(b <= a);
         return a - b;
     }
 
-    function add(uint256 a, uint256 b) internal pure returns (uint256)
-    {
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
         uint256 c = a + b;
         assert(c >= a);
         return c;
