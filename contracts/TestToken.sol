@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.7.0;
 
+
 contract TestToken {
     //uint256 can over/underflow, so SafeMath prevents fuckups
     //Usings at top
@@ -9,10 +10,10 @@ contract TestToken {
     //Public can be access from outside the contract
     //View is constant
     //Events can trigger external applications
-    string public constant name = 'TestToken';
-    string public constant symbol = 'TTN';
-    address public DeployerAddress;
-    uint8 public constant decimals = 18;
+    string public constant NAME = "TestToken";
+    string public constant SYMBOL = "TTN";
+    address public deployerAddress;
+    uint8 public constant DECIMALS = 18;
 
     //Define Approval event with owner address, delegate address and amount of tokens the delegate can spend
     event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
@@ -102,7 +103,7 @@ contract TestToken {
         require(numTokens <= balances[owner]);
         require(numTokens <= allowed[owner][msg.sender]);
 
-        //Remove set amount of tokens from owner's balance
+        //Remove set amount of tokens from owner"s balance
         balances[owner] = balances[owner].sub(numTokens);
 
         //Remove set amount of allowed tokens from delegate
