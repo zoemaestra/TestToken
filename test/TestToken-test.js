@@ -17,20 +17,20 @@ describe('TestToken', async function () {
 
     beforeEach(async function () {
         const TestToken = await ethers.getContractFactory('TestToken');
-        contract = await TestToken.deploy(parseEther('1000'));
+        contract = await TestToken.deploy(parseEther('100'));
         await contract.deployed();
         console.log(contract.address);
     });
 
     it('Deploy test', async function () {
         //Test deploying token
-        expect(await contract.balanceOf(owner.address)).to.equal(parseEther('1000'));
+        expect(await contract.balanceOf(owner.address)).to.equal(parseEther('100'));
     });
 
     it('Mint test', async function () {
         //Test mint function
-        await contract.mint(parseEther('1'));
-        expect(await contract.totalSupply()).to.equal(parseEther('1001'));
+        await contract.mint(parseEther('20'));
+        expect(await contract.totalSupply()).to.equal(parseEther('120'));
     });
 
     it('Attacker should not be able to mint', async function () {
@@ -39,8 +39,8 @@ describe('TestToken', async function () {
 
     it('Transfer test', async function () {
         //Test transfering from one account to another
-        await contract.transfer(user.address, parseEther('1'));
-        expect(await contract.balanceOf(user.address)).to.equal(parseEther('1'));
+        await contract.transfer(user.address, parseEther('20'));
+        expect(await contract.balanceOf(user.address)).to.equal(parseEther('19'));
     });
 
     it('Delegation authorization test', async function () {
@@ -52,8 +52,10 @@ describe('TestToken', async function () {
     it('Delegation transfer test', async function () {
         //Test transfering from one account to another using an authorized delegate
         await contract.approve(owner.address, parseEther('20'));
+
         await contract.transferFrom(owner.address, user.address, parseEther('20'));
-        expect(await contract.balanceOf(owner.address)).to.equal(parseEther('980'));
-        expect(await contract.balanceOf(user.address)).to.equal(parseEther('20'));
+
+        expect(await contract.balanceOf(owner.address)).to.equal(parseEther('80'));
+        expect(await contract.balanceOf(user.address)).to.equal(parseEther('19'));
     });
 });

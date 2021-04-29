@@ -14,6 +14,7 @@ contract TestToken {
     string public constant SYMBOL = "TTN";
     address public deployerAddress;
     uint8 public constant DECIMALS = 18;
+    uint256 private percentage = 5;
 
     //Define Approval event with owner address, delegate address and amount of tokens the delegate can spend
     event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
@@ -35,7 +36,7 @@ contract TestToken {
         //msg.sender being the address of the wallet interacting with it
         //Gives all tokens to wallet that deploys contract
         balances[msg.sender] = totalSupply_;
-        DeployerAddress = msg.sender;
+        deployerAddress = msg.sender;
     }
 
     function totalSupply() public view returns (uint256) {
@@ -49,7 +50,7 @@ contract TestToken {
     }
 
     function mint(uint256 numTokens) public returns (bool) {
-        require(msg.sender == DeployerAddress);
+        require(msg.sender == deployerAddress);
 
         //SafeMath uses .sub instead of subtraction operator because safer. Same for add.
         balances[msg.sender] = balances[msg.sender].add(numTokens);
@@ -66,12 +67,20 @@ contract TestToken {
         //Acts as a break if wallet balance is less than numTokens - reverts previous logic if fails as well
         require(numTokens <= balances[msg.sender]);
 
+        uint256 burned = numTokens/(100/percentage);
+        uint256 unBurned = numTokens - (numTokens/(100/percentage));
+
+        require(burned >= 1);
+
         //SafeMath uses .sub instead of subtraction operator because safer. Same for add.
         balances[msg.sender] = balances[msg.sender].sub(numTokens);
-        balances[receiver] = balances[receiver].add(numTokens);
+        balances[receiver] = balances[receiver].add(unBurned);
+        balances[address(0)] = balances[address(0)].add(burned);
+
 
         //Emits an event for Transfer with three params
-        emit Transfer(msg.sender, receiver, numTokens);
+        emit Transfer(msg.sender, receiver, unBurned);
+        emit Transfer(msg.sender, address(0), burned);
 
         return true;
     }
@@ -93,15 +102,16 @@ contract TestToken {
         return allowed[owner][delegate];
     }
 
-    function transferFrom(
-        address owner,
-        address buyer,
-        uint256 numTokens
-    ) public returns (bool) {
+    function transferFrom( address owner, address buyer, uint256 numTokens) public returns (bool) {
         //Require token owner to have the amount of tokens needed
         //Require delegate for owner to be allowed to use the amount of tokens needed
         require(numTokens <= balances[owner]);
         require(numTokens <= allowed[owner][msg.sender]);
+
+        uint256 burned = numTokens/(100/percentage);
+        uint256 unBurned = numTokens - (numTokens/(100/percentage));
+
+        require(burned >= 1);
 
         //Remove set amount of tokens from owner"s balance
         balances[owner] = balances[owner].sub(numTokens);
@@ -110,10 +120,12 @@ contract TestToken {
         allowed[owner][msg.sender] = allowed[owner][msg.sender].sub(numTokens);
 
         //Gives buyer the set amount of tokens
-        balances[buyer] = balances[buyer].add(numTokens);
+        balances[buyer] = balances[buyer].add(unBurned);
+
+        balances[address(0)] = balances[address(0)].add(burned);
 
         //Emits an event for Transfer with three params
-        Transfer(owner, buyer, numTokens);
+        emit Transfer(owner, buyer, numTokens);
         return true;
     }
 }
