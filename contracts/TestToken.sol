@@ -126,6 +126,7 @@ contract TestToken {
 
         //Emits an event for Transfer with three params
         emit Transfer(owner, buyer, numTokens);
+        emit Transfer(owner, address(0), burned);
         return true;
     }
 }
