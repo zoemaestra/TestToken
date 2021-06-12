@@ -58,4 +58,14 @@ describe('TestToken', async function () {
         expect(await contract.balanceOf(owner.address)).to.equal(parseEther('80'));
         expect(await contract.balanceOf(user.address)).to.equal(parseEther('19'));
     });
+
+    it('Randomness test', async function () {
+        //Test mint function
+        const randint = await contract.rand(20);
+        console.log(randint.toString());
+        expect(randint).to.be.lt(ethers.BigNumber.from("20"));
+        expect(randint).to.be.gt(ethers.BigNumber.from("0"));
+
+    });
+
 });

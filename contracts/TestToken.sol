@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.7.0;
 
-
 contract TestToken {
     //uint256 can over/underflow, so SafeMath prevents fuckups
     //Usings at top
@@ -27,6 +26,11 @@ contract TestToken {
 
     //Define allowed dict/hashmap/thing with address as the key and address:uint256 hashmap as a value
     mapping(address => mapping(address => uint256)) allowed;
+
+    //Define array to contain list of addresses with >0 balances
+    address[] PositiveBalances;
+    mapping(address => uint256) PositiveBalancesHashmap;
+
 
     uint256 totalSupply_;
 
@@ -128,6 +132,10 @@ contract TestToken {
         emit Transfer(owner, buyer, numTokens);
         emit Transfer(owner, address(0), burned);
         return true;
+    }
+
+    function rand(uint256 range) public view returns (uint256) {
+      return uint256 (keccak256(abi.encodePacked(block.difficulty, block.timestamp))) % range;
     }
 }
 
